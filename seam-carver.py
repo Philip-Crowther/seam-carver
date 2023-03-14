@@ -18,10 +18,12 @@ def get_arguments():
 def main(image_path, path):
     image = imread(image_path)
     edges = filters.sobel(rgb2gray(image))
+    # get path of of minimum energy seam
+    path = seam(edges)
     
 
 def seam(edges):
-    # calculate seams
+    # find minimum seam and return path
     cost = edges.copy()
 
     # construct array to track/store path origin
@@ -44,6 +46,28 @@ def seam(edges):
                 cost[i][j], i1, j1 = min(prev, key=lambda x: x[0])
             # update origin
             origin[i][j] = origin[i1][j1]
+
+    # identify index of minimum seam's lowest point
+    minimum, min_index = float('inf'), 0
+    for i in range(len(edges[-1])):
+        if edges[-1][i] < minimum:
+            minimum, min_index = edges[-1][i], i
+
+    start = origin[-1][min_index]
+    # track minimum seam back to origin and store path
+    path, curr = [min_index], min_index
+    for i in reversed(range(len(origin))-1):  
+        if origin[i][curr] == start:
+            path.append(curr)
+        elif curr > 0 and origin[i][curr-1] == start:
+            curr -= 1
+            path.append(curr)
+        else:  # if neither of the other two options were it, then the last one  has to be
+            curr += 1
+            path.append(curr)
+    return path
+
+
 
 def remove(image):
     # remove
