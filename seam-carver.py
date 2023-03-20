@@ -1,5 +1,5 @@
 import argparse
-from skimage.io import imread
+from skimage.io import imread, imsave
 from skimage.color import rgb2gray
 from skimage import filters
 import numpy as np
@@ -20,6 +20,7 @@ def main(image_path, save_path):
     iterations = 1
     for _ in range(iterations):
         image = run(image)
+    imsave(save_path, image)  
 
 
 def run(image):
