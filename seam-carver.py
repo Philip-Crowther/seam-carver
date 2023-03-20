@@ -20,6 +20,7 @@ def main(image_path, path):
     edges = filters.sobel(rgb2gray(image))
     # get path of of minimum energy seam
     path = seam(edges)
+    image = remove(image, path)
     
 
 def seam(edges):
@@ -48,7 +49,7 @@ def seam(edges):
             origin[i][j] = origin[i1][j1]
 
     # identify index of minimum seam's lowest point
-    minimum, min_index = float('inf'), 0
+    minimum, min_index = float('inf'), 0  
     for i in range(len(edges[-1])):
         if edges[-1][i] < minimum:
             minimum, min_index = edges[-1][i], i
@@ -68,12 +69,13 @@ def seam(edges):
     return path
 
 
-
-def remove(image):
-    # remove
-    new_image = None
+def remove(image, path):
+    # remove one pixel at each index specified in path
+    num_rows, num_col = image.shape
+    new_image = np.zeros((num_rows, num_col - 1))
+    for row in range(num_rows):
+        new_image[row][:] = np.concatenate((image[row][:path[row]], image[row][path[row]+1:]))
     return new_image
-
 
 
 if __name__ == "__main__":
