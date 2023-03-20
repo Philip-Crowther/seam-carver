@@ -15,13 +15,17 @@ def get_arguments():
     # return parsed args
     return parser.parse_args()
 
-def main(image_path, path):
+def main(image_path, save_path):
     image = imread(image_path)
+    iterations = 1
+    for _ in range(iterations):
+        image = run(image)
+
+
+def run(image):
+    # detect edges then find lowest cost seam and return image with seam removed
     edges = filters.sobel(rgb2gray(image))
-    # get path of of minimum energy seam
-    path = seam(edges)
-    image = remove(image, path)
-    
+    return remove(image, seam(edges))
 
 def seam(edges):
     # find minimum seam and return path
