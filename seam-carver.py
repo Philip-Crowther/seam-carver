@@ -22,7 +22,6 @@ def main(image_path, save_path):
         image = run(image)
     imsave(save_path, image)  
 
-
 def run(image):
     # detect edges then find lowest cost seam and return image with seam removed
     edges = filters.sobel(rgb2gray(image))
@@ -39,18 +38,20 @@ def seam(edges):
 
     for i in range(1, len(edges)):
         for j in range(len(edges[0])):
+            print(i, j)
             # find lowest cost path from previous row and update path origin
             # format: (value, i index of value, j index of value)  -  the indices are used to update origin
             if j == 0: # left edge
                 prev = [(cost[i-1][j], i-1, j), (cost[i-1][j+1], i-1, j+1)]
-                cost[i][j], i1, j1  = min(prev, key=lambda x: x[0])
-            elif j == len(edges[0]): # right edge
+            elif j == len(edges[0]) - 1: # right edge
+                print(j)
                 prev = [(cost[i-1][j-1], i-1, j-1), (cost[i-1][j], i-1, j)]
-                cost[i][j], i1, j1 = min(prev, key=lambda x: x[0])
             else:  # middle
                 prev = [(cost[i-1][j-1], i-1, j-1), (cost[i-1][j], i-1, j), (cost[i-1][j+1], i-1, j+1)]
-                cost[i][j], i1, j1 = min(prev, key=lambda x: x[0])
-            # update origin
+            # get lowest possible cost and its location
+            c, i1, j1 = min(prev, key=lambda x: x[0])
+            # update cost and origin
+            cost[i][j] += c
             origin[i][j] = origin[i1][j1]
 
     # identify index of minimum seam's lowest point
@@ -71,6 +72,7 @@ def seam(edges):
         else:  # if neither of the other two options were it, then the last one  has to be
             curr += 1
             path.append(curr)
+
     return path
 
 
