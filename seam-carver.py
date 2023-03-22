@@ -9,16 +9,16 @@ def get_arguments():
     parser = argparse.ArgumentParser()
 
     # add arguments
-    parser.add_argument('image')
-    parser.add_argument('save_path')
+    parser.add_argument('image', type=str)
+    parser.add_argument('save_path', type=str)
+    parser.add_argument('seams', type=int)
     
     # return parsed args
     return parser.parse_args()
 
-def main(image_path, save_path):
+def main(image_path, save_path, seams):
     image = imread(image_path)
-    iterations = 1
-    for _ in range(iterations):
+    for _ in range(seams):
         image = run(image)
     imsave(save_path, image)  
 
@@ -88,4 +88,4 @@ def remove(image, path):
 if __name__ == "__main__":
     # get arguments
     args = get_arguments()
-    main(args.image, args.save_path)
+    main(args.image, args.save_path, args.seams)
