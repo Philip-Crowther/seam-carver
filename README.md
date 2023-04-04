@@ -1,2 +1,6 @@
 # seam-carver
-implementation of the seam carving algorithm
+This code performs content-aware image resizing using seam carving algorithm. It takes an input image, applies the seam carving algorithm to remove or add a specified number of seams (depending on the sign of the "seams" argument), and saves the output image to the specified path.
+
+The seam carving algorithm works by finding and removing the lowest cost seam from the image. The cost of a seam is calculated by computing the cumulative cost matrix for each pixel in the image and finding the path with the lowest total cost. The cost of a pixel is calculated based on its gradient magnitude, which represents the importance of the pixel in preserving the image's features. The path with the lowest cost is then removed from the image by removing the corresponding pixels from each row.
+
+The code uses the argparse module to parse command line arguments, and the skimage library to read and write images, as well as to perform some image processing operations. It defines several helper functions to implement the seam carving algorithm, such as "find_costs", "find_seam", and "remove". The main function takes the input image path, output image path, and number of seams to remove/add as arguments, and applies the seam carving algorithm to the input image.
